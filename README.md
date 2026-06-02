@@ -1,36 +1,85 @@
-![npm](https://img.shields.io/npm/v/fireaccess)
-![downloads](https://img.shields.io/npm/dm/fireaccess)
-![license](https://img.shields.io/npm/l/fireaccess)
-
 # FireAccess
 
-Firebase Admin authentication, MongoDB user sync, RBAC, permissions, and audit logging for Express.js.
+![npm version](https://img.shields.io/npm/v/fireaccess)
+![npm downloads](https://img.shields.io/npm/dm/fireaccess)
+![license](https://img.shields.io/npm/l/fireaccess)
+![node](https://img.shields.io/node/v/fireaccess)
 
-FireAccess is a production-ready authentication and authorization toolkit that combines Firebase Authentication, MongoDB user synchronization, role-based access control, permission checks, and audit logs in one TypeScript-friendly package.
+Firebase Admin Authentication + MongoDB User Sync + RBAC + Permissions + Audit Logging for Express.js.
+
+FireAccess is a production-ready authentication and authorization toolkit that combines Firebase Authentication, MongoDB user synchronization, role-based access control (RBAC), permission-based access control, and audit logging in one TypeScript-friendly package.
+
+## Links
+
+* npm package: https://www.npmjs.com/package/fireaccess
+* GitHub repository: https://github.com/samshawon10/fireaccess
+* Issues and feature requests: https://github.com/samshawon10/fireaccess/issues
+* Changelog: https://github.com/samshawon10/fireaccess/blob/main/CHANGELOG.md
 
 ## Features
 
 * Firebase Admin SDK token verification
 * Automatic MongoDB user synchronization
-* Express middleware for authentication, roles, permissions, and audit logs
+* Express authentication middleware
+* Role-Based Access Control (RBAC)
+* Permission-Based Access Control
+* Audit logging middleware
+* Auto user creation from Firebase claims
 * Role hierarchy support
-* Permission-based access control
-* Auto user creation from Firebase token claims
 * Inactive user blocking
-* TypeScript types for `req.user` and `req.firebaseUser`
-* Clean ESM and CommonJS builds
+* TypeScript support
+* ESM and CommonJS builds
+* Production-ready architecture
 
-## Requirements
+## Why FireAccess?
 
-* Node.js 20 or newer
-* Express 4 or 5
-* Firebase Admin SDK 13 or newer
-* Mongoose 8 or newer
+Most Firebase authentication solutions only verify tokens.
+
+FireAccess additionally provides:
+
+* Automatic MongoDB user synchronization
+* Role hierarchy management
+* Permission middleware
+* Audit logging
+* Express integration
+* Strong TypeScript support
+
+All in one package.
 
 ## Installation
 
 ```bash
 npm install fireaccess express firebase-admin mongoose
+```
+
+## Requirements
+
+| Package | Version |
+| --- | --- |
+| Node.js | >=20 |
+| Express | >=4.18 |
+| Firebase Admin | >=13 |
+| Mongoose | >=8 |
+
+## Architecture
+
+```text
+Client
+  |
+  v
+Firebase Authentication
+  |
+  v
+FireAccess Middleware
+  |
+  v
+MongoDB User Sync
+  |
+  v
+RBAC + Permissions
+  |
+  v
+Route Controller
 ```
 
 ## Quick Start
@@ -56,9 +105,11 @@ app.get("/profile", auth.authenticate(), (req, res) => {
 });
 
 app.use(auth.errorHandler());
+
+app.listen(3000);
 ```
 
-Send Firebase ID tokens in the `Authorization` header:
+Send Firebase ID tokens:
 
 ```http
 Authorization: Bearer <firebase-id-token>
@@ -70,41 +121,68 @@ Authorization: Bearer <firebase-id-token>
 app.get("/profile", auth.authenticate(), controller);
 ```
 
-The authentication middleware:
+Authentication middleware:
 
-* verifies the Firebase ID token
-* connects to MongoDB
-* creates or updates the local user record
-* blocks inactive users
-* attaches `req.user` and `req.firebaseUser`
+* Verifies Firebase token
+* Synchronizes user with MongoDB
+* Creates user automatically
+* Blocks inactive users
+* Attaches `req.user`
+* Attaches `req.firebaseUser`
 
-## Roles
+## Role-Based Access Control (RBAC)
+
+### Single Role
 
 ```ts
 app.get("/admin", auth.role("admin"), controller);
 ```
 
-Multiple roles are supported:
+### Multiple Roles
 
 ```ts
-app.get("/staff", auth.role(["admin", "manager"]), controller);
+app.get(
+  "/staff",
+  auth.role(["admin", "manager"]),
+  controller,
+);
 ```
 
-Role hierarchy:
+### Role Hierarchy
 
-```txt
-super_admin > admin > manager > agent > user
+```text
+super_admin
+  |
+  v
+admin
+  |
+  v
+manager
+  |
+  v
+agent
+  |
+  v
+user
 ```
 
-A higher role satisfies checks for lower roles.
+Higher roles automatically satisfy lower-level requirements.
 
-## Permissions
+## Permission-Based Access Control
+
+### Single Permission
 
 ```ts
-app.post("/courses", auth.permission("course.create"), controller);
+auth.permission("course.create");
 ```
 
-Multiple permissions require every listed permission:
+### Multiple Permissions
+
+```ts
+auth.permission(["course.edit", "course.publish"]);
+```
+
+Example:
 
 ```ts
 app.patch(
@@ -114,7 +192,7 @@ app.patch(
 );
 ```
 
-Users with the `super_admin` role bypass permission checks.
+Super administrators bypass permission checks.
 
 ## Audit Logging
 
@@ -127,7 +205,19 @@ app.delete(
 );
 ```
 
-Audit logs are stored in MongoDB through `AuditModel`.
+Audit records are automatically stored in MongoDB.
+
+### Audit Schema
+
+```ts
+{
+  action: string;
+  performedBy?: string;
+  target?: string;
+  metadata: Record<string, unknown>;
+  timestamp: Date;
+}
+```
 
 ## Configuration
 
@@ -147,33 +237,102 @@ const auth = createFireAccess({
 });
 ```
 
-## API
+## API Reference
+
+### Initialization
 
 ```ts
 auth.initialize();
+```
+
+### Authentication
+
+```ts
 auth.authenticate();
+```
+
+### Role Middleware
+
+```ts
 auth.role("admin");
+```
+
+### Permission Middleware
+
+```ts
 auth.permission("course.create");
+```
+
+### Audit Middleware
+
+```ts
 auth.audit("delete_user");
+```
+
+### Error Handler
+
+```ts
 auth.errorHandler();
 ```
 
-Models are also exposed for advanced workflows:
+## Models
+
+Advanced users can access internal models.
 
 ```ts
 auth.models.UserModel;
 auth.models.AuditModel;
 ```
 
-## TypeScript
+## TypeScript Support
 
-FireAccess augments Express request types:
+FireAccess augments Express request types.
 
 ```ts
 req.user?.uid;
 req.user?.email;
 req.user?.role;
 req.firebaseUser?.uid;
+```
+
+No additional typings are required.
+
+## Error Responses
+
+### 401 Unauthorized
+
+```json
+{
+  "error": {
+    "code": "FIREACCESS_UNAUTHORIZED",
+    "message": "Invalid Firebase authentication token.",
+    "statusCode": 401
+  }
+}
+```
+
+### 403 Forbidden
+
+```json
+{
+  "error": {
+    "code": "FIREACCESS_FORBIDDEN",
+    "message": "You do not have permission to perform this action.",
+    "statusCode": 403
+  }
+}
+```
+
+### 403 Inactive User
+
+```json
+{
+  "error": {
+    "code": "FIREACCESS_INACTIVE_USER",
+    "message": "This user account is inactive.",
+    "statusCode": 403
+  }
+}
 ```
 
 ## Development
@@ -185,7 +344,7 @@ npm test
 npm pack --dry-run
 ```
 
-Run all publish checks:
+Run all checks:
 
 ```bash
 npm run ci
@@ -206,9 +365,7 @@ npm login
 npm whoami
 ```
 
-If `npm whoami` returns `E401 Unauthorized`, the machine is not logged in and publishing will fail.
-
-Publishing also requires either 2FA on your npm account or a granular access token with bypass 2FA enabled. If publish returns `E403 Forbidden` with a 2FA message, enable 2FA for your npm account or publish with a valid one-time password:
+Publishing requires either npm 2FA enabled on your account or a granular access token with bypass 2FA enabled. If publish returns `E403 Forbidden` with a 2FA message, enable 2FA or publish with a valid one-time password:
 
 ```bash
 npm publish --access public --otp=123456
@@ -226,12 +383,6 @@ Publish the package publicly:
 npm run publish:public
 ```
 
-If your npm account requires two-factor authentication, npm will prompt for an OTP. You can also pass one manually:
-
-```bash
-npm publish --access public --otp=123456
-```
-
 Use provenance publishing only from a supported CI environment:
 
 ```bash
@@ -241,28 +392,42 @@ npm run publish:provenance
 ## Security
 
 * Firebase token verification happens server-side
-* MongoDB is the role and permission source of truth
-* Client token role claims are not trusted for authorization
+* MongoDB is the source of truth for roles and permissions
+* Client role claims are never trusted
 * Inactive users are blocked
-* FireAccess errors return stable JSON responses
+* Stable JSON error responses
+* Audit logs for sensitive actions
 
 ## Roadmap
 
 ### v1.1
 
-* Redis cache
+* Redis cache support
 * Better audit analytics
+* Performance improvements
 
 ### v1.2
 
 * React SDK
+* React permission components
 
 ### v2.0
 
 * Multi-tenant support
 * Organization management
 * Team management
+* API key authentication
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Support
+
+Issues and feature requests:
+
+https://github.com/samshawon10/fireaccess/issues
 
 ## License
 
-MIT
+MIT (c) Sam Shawon
