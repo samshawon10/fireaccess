@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "tools/**/*.ts",
+    "eslint.config.js"
+  ],
+  "exclude": [
+    "**/dist/**",
+    "**/.next/**",
+    "**/node_modules/**",
+    "tools/cli/templates/**"
+  ]
+}

@@ -7,14 +7,20 @@ const tsconfigRootDir = dirname(fileURLToPath(import.meta.url));
 
 export default [
   {
-    ignores: ["dist/**", "node_modules/**"],
+    ignores: [
+      "**/dist/**",
+      "**/.next/**",
+      "**/node_modules/**",
+      "templates/**",
+      "tools/cli/templates/**"
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
     languageOptions: {
       parserOptions: {
-        project: "./tsconfig.json",
+        project: "./tsconfig.eslint.json",
         tsconfigRootDir,
       },
     },

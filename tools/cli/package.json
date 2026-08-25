@@ -1,0 +1,31 @@
+{
+  "name": "create-fireaccess",
+  "version": "1.1.0",
+  "description": "Generate a production-ready FireAccess MERN project.",
+  "type": "module",
+  "bin": {
+    "create-fireaccess": "./dist/index.js"
+  },
+  "files": ["dist", "templates"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean --target node20",
+    "clean": "rimraf dist templates",
+    "lint": "eslint src --max-warnings=0",
+    "prepack": "node scripts/copy-templates.mjs && pnpm build",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

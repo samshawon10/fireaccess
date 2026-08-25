@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@fireaccess/types": ["packages/types/src/index.ts"],
+      "@fireaccess/ui-components": ["packages/ui-components/src/index.ts"],
+      "@fireaccess/react-sdk": ["packages/react-sdk/src/index.tsx"],
+      "@fireaccess/nextjs-sdk": ["packages/nextjs-sdk/src/index.ts"],
+      "fireaccess": ["packages/core-sdk/src/index.ts"]
+    }
+  }
+}
