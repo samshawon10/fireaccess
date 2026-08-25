@@ -13,10 +13,12 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean --sourcemap --target node20",
+    "build": "node init && tsup src/index.ts --format esm,cjs --dts --clean --sourcemap --target node20",
     "clean": "rimraf dist",
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run --passWithNoTests",

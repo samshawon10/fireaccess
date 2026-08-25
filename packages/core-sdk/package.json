@@ -13,7 +13,11 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "engines": {
     "node": ">=20"
@@ -22,7 +26,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean --sourcemap --target node20",
+    "build": "node init && tsup src/index.ts --format esm,cjs --dts --clean --sourcemap --target node20",
     "clean": "rimraf dist",
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run --passWithNoTests",

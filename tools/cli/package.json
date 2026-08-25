@@ -6,9 +6,12 @@
   "bin": {
     "create-fireaccess": "./dist/index.js"
   },
-  "files": ["dist", "templates"],
+  "files": [
+    "dist",
+    "templates"
+  ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm --clean --target node20",
+    "build": "node init && tsup src/index.ts --format esm --clean --target node20",
     "clean": "rimraf dist templates",
     "lint": "eslint src --max-warnings=0",
     "prepack": "node scripts/copy-templates.mjs && pnpm build",

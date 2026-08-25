@@ -8,7 +8,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean --sourcemap --target node20",
+    "build": "node init && tsup src/index.ts --format esm,cjs --dts --clean --sourcemap --target node20",
     "clean": "rimraf dist",
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run --passWithNoTests",

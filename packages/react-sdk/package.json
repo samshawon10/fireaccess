@@ -13,10 +13,12 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.tsx --format esm,cjs --dts --clean --sourcemap --target es2022 --external react",
+    "build": "node init && tsup src/index.tsx --format esm,cjs --dts --clean --sourcemap --target es2022 --external react",
     "clean": "rimraf dist",
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run --passWithNoTests",
